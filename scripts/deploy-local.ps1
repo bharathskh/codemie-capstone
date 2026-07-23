@@ -30,9 +30,9 @@ if (Test-Path $APP_DIR) {
 Write-Host "`n[2/4] Checking port $PORT..." -ForegroundColor Yellow
 $portInUse = netstat -ano | Select-String ":$PORT " | Select-String "LISTENING"
 if ($portInUse) {
-    $pid = ($portInUse -split '\s+')[-1]
-    Write-Host "  Port $PORT is in use by PID $pid. Stopping it..." -ForegroundColor Red
-    taskkill /PID $pid /F | Out-Null
+    $procId = ($portInUse -split '\s+')[-1]
+    Write-Host "  Port $PORT is in use by PID $procId. Stopping it..." -ForegroundColor Red
+    taskkill /PID $procId /F | Out-Null
     Start-Sleep -Seconds 1
 }
 
