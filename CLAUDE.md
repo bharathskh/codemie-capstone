@@ -157,5 +157,5 @@ After writing or modifying any code file, always commit the changes:
 npm install
 npm start
 # open http://localhost:3000
-# demo credentials: demo / Password123!
+# demo credentials: demo / C0dem!e@Secure#24
 ```
