@@ -1,0 +1,16 @@
+{
+  "name": "codemie-capstone",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Capstone - login flow demo",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "express": "^4.19.2",
+    "helmet": "^7.1.0"
+  }
+}
