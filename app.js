@@ -1,214 +1,153 @@
-const el = (id) => document.getElementById(id);
+const loginPage   = document.getElementById('loginPage');
+const homePage    = document.getElementById('homePage');
+const loginForm   = document.getElementById('loginForm');
+const usernameEl  = document.getElementById('username');
+const passwordEl  = document.getElementById('password');
+const loginBtn    = document.getElementById('loginBtn');
+const resetBtn    = document.getElementById('resetBtn');
+const logoutBtn   = document.getElementById('logoutBtn');
+const statusEl    = document.getElementById('status');
+const welcomeMsg  = document.getElementById('welcomeMsg');
+const usernameErr = document.getElementById('usernameErr');
+const passwordErr = document.getElementById('passwordErr');
 
-const loginForm = el('loginForm');
-const usernameInput = el('username');
-const passwordInput = el('password');
-const loginBtn = el('loginBtn');
-const resetBtn = el('resetBtn');
-const logoutBtn = el('logoutBtn');
+// --- Helpers ---
 
-const statusEl = el('status');
-const loadingEl = el('loading');
-
-const usernameErrorEl = el('usernameError');
-const passwordErrorEl = el('passwordError');
-
-const homeSection = el('home');
-const welcomeEl = el('welcome');
-
-const REQUEST_TIMEOUT_MS = 10000;
-
-function setStatus(message) {
-  statusEl.textContent = message || '';
+function showLogin() {
+  homePage.hidden = true;
+  loginPage.hidden = false;
+  passwordEl.value = '';
+  clearErrors();
+  statusEl.textContent = '';
+  usernameEl.focus();
 }
 
-function setLoading(isLoading) {
-  loadingEl.style.display = isLoading ? 'flex' : 'none';
-  loadingEl.setAttribute('aria-hidden', isLoading ? 'false' : 'true');
-  loginBtn.disabled = isLoading;
-  resetBtn.disabled = isLoading;
-  usernameInput.disabled = isLoading;
-  passwordInput.disabled = isLoading;
+function showHome(username) {
+  loginPage.hidden = true;
+  homePage.hidden = false;
+  welcomeMsg.textContent = `Welcome, ${username}`;
 }
 
-function clearFieldErrors() {
-  usernameErrorEl.textContent = '';
-  passwordErrorEl.textContent = '';
-  usernameInput.removeAttribute('aria-invalid');
-  passwordInput.removeAttribute('aria-invalid');
+function clearErrors() {
+  usernameErr.textContent = '';
+  passwordErr.textContent = '';
+  usernameEl.removeAttribute('aria-invalid');
+  passwordEl.removeAttribute('aria-invalid');
 }
 
-function setFieldError(field, message) {
+function setError(field, msg) {
   if (field === 'username') {
-    usernameErrorEl.textContent = message;
-    usernameInput.setAttribute('aria-invalid', 'true');
+    usernameErr.textContent = msg;
+    usernameEl.setAttribute('aria-invalid', 'true');
+  } else {
+    passwordErr.textContent = msg;
+    passwordEl.setAttribute('aria-invalid', 'true');
   }
-  if (field === 'password') {
-    passwordErrorEl.textContent = message;
-    passwordInput.setAttribute('aria-invalid', 'true');
-  }
+}
+
+function setLoading(on) {
+  loginBtn.disabled = on;
+  resetBtn.disabled = on;
+  usernameEl.disabled = on;
+  passwordEl.disabled = on;
+  loginBtn.textContent = on ? 'Signing in…' : 'Login';
 }
 
 function validate() {
-  clearFieldErrors();
-  setStatus('');
+  clearErrors();
+  statusEl.textContent = '';
 
-  const username = usernameInput.value.trim();
-  const password = passwordInput.value;
+  const username = usernameEl.value.trim();
+  const password = passwordEl.value;
+  let valid = true;
 
-  const errors = {};
+  if (!username) { setError('username', 'Username is required.'); valid = false; }
+  if (!password) { setError('password', 'Password is required.'); valid = false; }
 
-  if (!username) errors.username = 'Username is required.';
-  else if (username.length > 64) errors.username = 'Username must be 64 characters or fewer.';
-
-  if (!password) errors.password = 'Password is required.';
-  else if (password.length > 128) errors.password = 'Password must be 128 characters or fewer.';
-
-  if (Object.keys(errors).length) {
-    for (const [k, v] of Object.entries(errors)) setFieldError(k, v);
-
-    const first = errors.username ? usernameInput : passwordInput;
-    first.focus();
-    setStatus('Please check the highlighted fields.');
-    return { ok: false };
+  if (!valid) {
+    (usernameEl.getAttribute('aria-invalid') ? usernameEl : passwordEl).focus();
   }
-
-  return { ok: true, username, password };
+  return valid ? { username, password } : null;
 }
+
+// --- API ---
 
 async function apiFetch(path, options = {}) {
   const controller = new AbortController();
-  const t = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-
+  const timer = setTimeout(() => controller.abort(), 10000);
   try {
     const res = await fetch(path, {
       ...options,
       signal: controller.signal,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(options.headers || {})
-      },
-      credentials: 'include'
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json', ...(options.headers || {}) }
     });
-
-    const isJson = (res.headers.get('content-type') || '').includes('application/json');
-    const body = isJson ? await res.json() : null;
-
-    return { res, body };
+    const body = await res.json().catch(() => null);
+    return { ok: res.ok, status: res.status, body };
   } finally {
-    clearTimeout(t);
+    clearTimeout(timer);
   }
 }
 
-function showHome(username) {
-  loginForm.hidden = true;
-  homeSection.hidden = false;
-  // Prevent XSS by setting textContent
-  welcomeEl.textContent = `Welcome, ${username}`;
-  setStatus('');
-}
-
-function showLogin() {
-  homeSection.hidden = true;
-  loginForm.hidden = false;
-  passwordInput.value = '';
-  clearFieldErrors();
-  setStatus('');
-  usernameInput.focus();
-}
+// --- Handlers ---
 
 async function checkSession() {
   try {
-    const { res, body } = await apiFetch('/api/session', { method: 'GET' });
-    if (res.ok && body?.authenticated) {
+    const { ok, body } = await apiFetch('/api/session');
+    if (ok && body?.authenticated) {
       showHome(body.username);
     } else {
       showLogin();
     }
   } catch {
-    // If API is not running, default to login UI but show a helpful status.
     showLogin();
-    setStatus('Unable to reach server. Please start the server and try again.');
   }
 }
 
 loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
-
-  const v = validate();
-  if (!v.ok) return;
+  const fields = validate();
+  if (!fields) return;
 
   setLoading(true);
-
   try {
-    const { res, body } = await apiFetch('/api/login', {
+    const { ok, status, body } = await apiFetch('/api/login', {
       method: 'POST',
-      body: JSON.stringify({ username: v.username, password: v.password })
+      body: JSON.stringify(fields)
     });
 
-    if (res.ok && body?.authenticated) {
-      // Clear sensitive field
-      passwordInput.value = '';
+    if (ok && body?.authenticated) {
       showHome(body.username);
       return;
     }
 
-    // Error handling per api-contract.md
-    const err = body?.error;
-
-    if (res.status === 400 && err?.code === 'VALIDATION_ERROR' && err.fieldErrors) {
-      clearFieldErrors();
-      for (const [field, msg] of Object.entries(err.fieldErrors)) {
-        setFieldError(field, msg);
-      }
-      setStatus(err.message || 'Please check the highlighted fields.');
-      (err.fieldErrors.username ? usernameInput : passwordInput).focus();
-      return;
-    }
-
-    if (res.status === 423 && err?.code === 'ACCOUNT_LOCKED') {
-      setStatus(err.message || 'Too many failed attempts. Please try again later.');
-      return;
-    }
-
-    if (res.status === 429 && err?.code === 'RATE_LIMITED') {
-      setStatus(err.message || 'Too many requests. Please try again later.');
-      return;
-    }
-
-    // 401 or other errors
-    setStatus(err?.message || 'Invalid username or password.');
-  } catch (e2) {
-    if (e2?.name === 'AbortError') {
-      setStatus('Login request timed out. Please try again.');
+    if (status === 423) {
+      statusEl.textContent = 'Too many failed attempts. Please try again later.';
     } else {
-      setStatus('Network/server unavailable. Please try again.');
+      statusEl.textContent = body?.error?.message || 'Invalid username or password.';
     }
+  } catch (err) {
+    statusEl.textContent = err?.name === 'AbortError'
+      ? 'Request timed out. Please try again.'
+      : 'Unable to connect. Please try again.';
   } finally {
+    passwordEl.value = '';
     setLoading(false);
   }
 });
 
 resetBtn.addEventListener('click', () => {
-  usernameInput.value = '';
-  passwordInput.value = '';
-  clearFieldErrors();
-  setStatus('');
-  usernameInput.focus();
+  usernameEl.value = '';
+  passwordEl.value = '';
+  clearErrors();
+  statusEl.textContent = '';
+  usernameEl.focus();
 });
 
 logoutBtn.addEventListener('click', async () => {
-  setStatus('Signing out…');
-  try {
-    await apiFetch('/api/logout', { method: 'POST' });
-  } catch {
-    // best-effort
-  }
+  await apiFetch('/api/logout', { method: 'POST' }).catch(() => {});
   showLogin();
 });
 
-// Initial focus management + session check
-window.addEventListener('DOMContentLoaded', () => {
-  setLoading(false);
-  checkSession();
-});
+// Init
+checkSession();

@@ -1,70 +1,50 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Login</title>
-  <link rel="stylesheet" href="/styles.css" />
+  <title>App</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <main class="page" aria-labelledby="pageTitle">
-    <div class="card" id="app">
-      <h1 id="pageTitle" class="title">Sign in</h1>
 
-      <!-- Global status and error announcements -->
-      <div id="status" class="status" role="status" aria-live="polite" aria-atomic="true"></div>
-
+  <!-- Login Page -->
+  <main id="loginPage" class="page">
+    <div class="card">
+      <h1>Sign In</h1>
+      <div id="status" role="status" aria-live="polite"></div>
       <form id="loginForm" novalidate>
         <div class="field">
-          <label for="username" class="label">Username</label>
-          <input
-            id="username"
-            name="username"
-            type="text"
-            inputmode="text"
-            autocomplete="username"
-            maxlength="64"
-            class="input"
-            aria-describedby="usernameError"
-          />
-          <div id="usernameError" class="error" role="alert"></div>
+          <label for="username">Username</label>
+          <input id="username" type="text" autocomplete="username" maxlength="64"
+                 aria-describedby="usernameErr" />
+          <span id="usernameErr" class="error"></span>
         </div>
-
         <div class="field">
-          <label for="password" class="label">Password</label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            autocomplete="current-password"
-            maxlength="128"
-            class="input"
-            aria-describedby="passwordError"
-          />
-          <div id="passwordError" class="error" role="alert"></div>
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password" maxlength="128"
+                 aria-describedby="passwordErr" />
+          <span id="passwordErr" class="error"></span>
         </div>
-
-        <div class="buttons">
-          <button id="loginBtn" type="submit" class="btn btn-primary">Login</button>
-          <button id="resetBtn" type="button" class="btn btn-secondary">Reset</button>
-        </div>
-
-        <div id="loading" class="loading" aria-hidden="true">
-          <span class="spinner" aria-hidden="true"></span>
-          <span>Signing in…</span>
+        <div class="actions">
+          <button type="submit" id="loginBtn" class="btn primary">Login</button>
+          <button type="button" id="resetBtn" class="btn">Reset</button>
         </div>
       </form>
-
-      <section id="home" class="home" hidden aria-live="polite">
-        <div class="homeHeader">
-          <div id="welcome" class="welcome"></div>
-          <button id="logoutBtn" type="button" class="btn btn-secondary">Logout</button>
-        </div>
-        <p class="muted">You are signed in.</p>
-      </section>
     </div>
   </main>
 
-  <script src="/app.js" defer></script>
+  <!-- Home Page -->
+  <main id="homePage" class="page" hidden>
+    <div class="card">
+      <div class="home-header">
+        <h1 id="welcomeMsg"></h1>
+        <button type="button" id="logoutBtn" class="btn">Logout</button>
+      </div>
+      <p>You are signed in.</p>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
 </body>
 </html>
