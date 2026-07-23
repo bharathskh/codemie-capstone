@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Sign in</h1>
+
+      <form id="loginForm" class="card" novalidate>
+        <div class="field">
+          <label for="username">Username</label>
+          <input
+            id="username"
+            name="username"
+            type="text"
+            inputmode="text"
+            autocomplete="username"
+            maxlength="64"
+            required
+            aria-describedby="usernameError"
+          />
+          <p id="usernameError" class="error" role="status" aria-live="polite"></p>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            maxlength="128"
+            required
+            aria-describedby="passwordError"
+          />
+          <p id="passwordError" class="error" role="status" aria-live="polite"></p>
+        </div>
+
+        <div id="formError" class="error form-error" role="alert" aria-live="assertive"></div>
+
+        <div class="actions">
+          <button id="loginBtn" type="submit">Login</button>
+          <button id="resetBtn" type="reset" class="secondary">Reset</button>
+        </div>
+
+        <div class="loading" id="loading" hidden>
+          <span class="spinner" aria-hidden="true"></span>
+          <span class="loading-text">Signing you in…</span>
+        </div>
+      </form>
+
+      <section id="home" class="card" hidden>
+        <h2>Home</h2>
+        <p id="welcome"></p>
+        <button id="logoutBtn" type="button" class="secondary">Logout</button>
+      </section>
+
+      <!-- Live region for error announcements across the form -->
+      <div id="liveRegion" class="sr-only" aria-live="assertive" aria-atomic="true"></div>
+    </main>
+
+    <script src="app.js" defer></script>
+  </body>
+</html>
