@@ -17,7 +17,7 @@ export default defineConfig({
     { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
   ],
   webServer: {
-    command: 'node server.js',
+    command: 'node src/server.js',
     url: 'http://localhost:3000',
     reuseExistingServer: true,
     timeout: 10000,

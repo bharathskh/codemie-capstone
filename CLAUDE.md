@@ -4,18 +4,37 @@ This project implements a **Login → Session → Home** flow using vanilla HTML
 
 Before writing any code, read and follow these three reference documents:
 
-- [`architecture.md`](./architecture.md) — component diagram, tech stack, folder structure, data flow, security architecture
-- [`design.md`](./design.md) — wireframes, component breakdown, accessibility patterns, responsive layout
-- [`api-contract.md`](./api-contract.md) — API endpoints, request/response schemas, error codes, cookie spec
+- [`docs/architecture.md`](./docs/architecture.md) — component diagram, tech stack, folder structure, data flow, security architecture
+- [`docs/design.md`](./docs/design.md) — wireframes, component breakdown, accessibility patterns, responsive layout
+- [`docs/api-contract.md`](./docs/api-contract.md) — API endpoints, request/response schemas, error codes, cookie spec
+
+## Folder structure
+
+```
+public/          ← static frontend (served by Express)
+  css/
+    styles.css
+  js/
+    app.js
+  index.html
+src/             ← backend
+  server.js
+docs/            ← reference docs
+  architecture.md
+  design.md
+  api-contract.md
+tests/           ← Playwright e2e tests
+  login.spec.js
+```
 
 ## File responsibilities
 
 | File | Owns |
 |------|------|
-| `index.html` | All markup — login form, home section, status live region |
-| `styles.css` | All styling — layout, focus indicators, error states, spinner |
-| `app.js` | All client logic — session check, login/logout fetch, validation, a11y, double-submit prevention |
-| `server.js` | All server logic — `/api/session`, `/api/login`, `/api/logout`, cookie session, lockout |
+| `public/index.html` | All markup — login form, home section, status live region |
+| `public/css/styles.css` | All styling — layout, focus indicators, error states, spinner |
+| `public/js/app.js` | All client logic — session check, login/logout fetch, validation, a11y, double-submit prevention |
+| `src/server.js` | All server logic — `/api/session`, `/api/login`, `/api/logout`, cookie session, lockout |
 | `package.json` | Dependencies: express, helmet, cookie-parser only |
 
 ## Coding rules

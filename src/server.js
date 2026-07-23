@@ -11,7 +11,7 @@ const PROD = process.env.NODE_ENV === 'production';
 app.use(helmet({ contentSecurityPolicy: false }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // --- Demo user (username: demo / password: C0dem!e@Secure#24) ---
 const SALT          = crypto.randomBytes(16).toString('hex');
@@ -77,6 +77,6 @@ app.post('/api/logout', (req, res) => {
   res.json({ ok: true });
 });
 
-app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
+app.get('*', (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'index.html')));
 
 app.listen(PORT, () => console.log(`Running at http://localhost:${PORT}  (demo: demo / Password123!)`));
