@@ -1,0 +1,120 @@
+:root{
+  --bg:#f6f7fb;
+  --card:#ffffff;
+  --text:#111827;
+  --muted:#4b5563;
+  --border:#d1d5db;
+  --primary:#111827;
+  --primaryText:#ffffff;
+  --error:#b42318;
+  --focus:#2563eb;
+}
+
+*{box-sizing:border-box;}
+
+body{
+  margin:0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  color:var(--text);
+  background:var(--bg);
+}
+
+.page{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+
+.card{
+  width:100%;
+  max-width:420px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:20px;
+  box-shadow: 0 6px 24px rgba(17,24,39,0.08);
+}
+
+.title{margin:0 0 12px 0; font-size:22px;}
+
+.field{margin:12px 0;}
+.label{display:block; font-weight:600; margin-bottom:6px;}
+
+.input{
+  width:100%;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  font-size:16px;
+}
+
+.input:focus{
+  outline:3px solid color-mix(in srgb, var(--focus) 35%, transparent);
+  border-color:var(--focus);
+}
+
+.input[aria-invalid="true"]{border-color:var(--error);}
+
+.error{min-height:18px; margin-top:6px; color:var(--error); font-size:14px;}
+
+.status{min-height:20px; margin:6px 0 10px 0; color:var(--muted);}
+
+.buttons{
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+}
+
+.btn{
+  flex:1;
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid var(--border);
+  background:#fff;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.btn:focus{
+  outline:3px solid color-mix(in srgb, var(--focus) 35%, transparent);
+}
+
+.btn-primary{
+  background:var(--primary);
+  color:var(--primaryText);
+  border-color:var(--primary);
+}
+
+.btn[disabled]{
+  opacity:0.6;
+  cursor:not-allowed;
+}
+
+.loading{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-top:12px;
+  color:var(--muted);
+}
+
+.spinner{
+  width:16px;
+  height:16px;
+  border-radius:50%;
+  border:2px solid var(--border);
+  border-top-color:var(--primary);
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.homeHeader{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+.welcome{font-weight:700;}
+.muted{color:var(--muted); margin:10px 0 0;}
+
+@media (max-width: 360px){
+  .buttons{flex-direction:column;}
+}
