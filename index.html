@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>App</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- Login Page -->
+  <main id="loginPage" class="page">
+    <div class="card">
+      <h1>Sign In</h1>
+      <div id="status" role="status" aria-live="polite"></div>
+      <form id="loginForm" novalidate>
+        <div class="field">
+          <label for="username">Username</label>
+          <input id="username" type="text" autocomplete="username" maxlength="64"
+                 aria-describedby="usernameErr" />
+          <span id="usernameErr" class="error"></span>
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password" maxlength="128"
+                 aria-describedby="passwordErr" />
+          <span id="passwordErr" class="error"></span>
+        </div>
+        <div class="actions">
+          <button type="submit" id="loginBtn" class="btn primary">Login</button>
+          <button type="button" id="resetBtn" class="btn">Reset</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Home Page -->
+  <main id="homePage" class="page" hidden>
+    <div class="card">
+      <div class="home-header">
+        <h1 id="welcomeMsg"></h1>
+        <button type="button" id="logoutBtn" class="btn">Logout</button>
+      </div>
+      <p>You are signed in.</p>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
