@@ -79,4 +79,4 @@ app.post('/api/logout', (req, res) => {
 
 app.get('*', (req, res) => res.sendFile(path.join(__dirname, '..', 'public', 'index.html')));
 
-app.listen(PORT, () => console.log(`Running at http://localhost:${PORT}  (demo: demo / Password123!)`));
+app.listen(PORT, () => console.log(`Running at http://localhost:${PORT}  (demo: demo / C0dem!e@Secure#24)`));

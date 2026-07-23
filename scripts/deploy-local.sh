@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # deploy-local.sh
-# Deploys codemie-capstone from GitHub to local machine (Mac/Linux)
+# Deploys codemie-capstone from GitHub to local machine (Mac/Linux/Windows Git Bash)
 # Usage: bash scripts/deploy-local.sh [--branch <branch>] [--docker]
 
 set -e
@@ -39,10 +39,27 @@ fi
 # ── Step 2: Check port availability ──────────────────────────────────────────
 echo ""
 echo "[2/4] Checking port $PORT..."
-if lsof -ti:"$PORT" &>/dev/null; then
+free_port() {
+  if command -v lsof &>/dev/null; then
+    # Mac/Linux
+    lsof -ti:"$PORT" | xargs kill -9 2>/dev/null || true
+  else
+    # Windows Git Bash
+    PID=$(netstat -ano 2>/dev/null | grep ":${PORT}.*LISTENING" | awk '{print $NF}' | head -1)
+    if [ -n "$PID" ]; then
+      echo "  Port $PORT in use by PID $PID — killing..."
+      taskkill //PID "$PID" //F &>/dev/null || true
+    fi
+  fi
+}
+if command -v lsof &>/dev/null && lsof -ti:"$PORT" &>/dev/null; then
   echo "  Port $PORT in use — killing existing process..."
-  lsof -ti:"$PORT" | xargs kill -9
-  sleep 1
+  free_port; sleep 1
+elif netstat -ano 2>/dev/null | grep -q ":${PORT}.*LISTENING"; then
+  echo "  Port $PORT in use — killing existing process..."
+  free_port; sleep 1
+else
+  echo "  Port $PORT is free."
 fi
 
 # ── Step 3: Install or build ──────────────────────────────────────────────────
