@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "private": true,
   "description": "Capstone - login flow demo",
-  "main": "server.js",
+  "main": "src/server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node src/server.js",
+    "dev": "node src/server.js",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui"
   },
   "dependencies": {
     "cookie-parser": "^1.4.6",
