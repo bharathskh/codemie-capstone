@@ -13,13 +13,14 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname)));
 
-// --- Demo user (username: demo / password: Password123!) ---
+// --- Demo user (username: demo / password: C0dem!e@Secure#24) ---
 const SALT          = crypto.randomBytes(16).toString('hex');
-const PASSWORD_HASH = crypto.pbkdf2Sync('Password123!', SALT, 100000, 32, 'sha256').toString('hex');
+const PASSWORD_HASH = crypto.pbkdf2Sync('C0dem!e@Secure#24', SALT, 100000, 32, 'sha256').toString('hex');
 
 function verifyPassword(input) {
   const hash = crypto.pbkdf2Sync(input, SALT, 100000, 32, 'sha256').toString('hex');
-  return crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(PASSWORD_HASH));
+  return hash.length === PASSWORD_HASH.length &&
+    crypto.timingSafeEqual(Buffer.from(hash), Buffer.from(PASSWORD_HASH));
 }
 
 // --- Sessions (in-memory) ---
