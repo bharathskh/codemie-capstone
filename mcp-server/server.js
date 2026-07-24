@@ -32,10 +32,11 @@ server.tool(
       ? `powershell -ExecutionPolicy Bypass -File "${PROJECT_DIR}\\scripts\\deploy-local.ps1" -Branch ${branch}${use_docker ? ' -UseDocker' : ''}`
       : `bash "${PROJECT_DIR}/scripts/deploy-local.sh" --branch ${branch}${use_docker ? ' --docker' : ''}`;
 
+    console.log(`Running: ${script}`);
     return new Promise((resolve) => {
-      exec(script, { cwd: PROJECT_DIR, timeout: 60000 }, (err, stdout, stderr) => {
+      exec(script, { cwd: PROJECT_DIR, timeout: 120000 }, (err, stdout, stderr) => {
         const output = (stdout + stderr).trim();
-        if (err && !stdout.includes('Starting application')) {
+        if (err && !output.includes('Starting application') && !output.includes('App running at')) {
           resolve({ content: [{ type: 'text', text: `Deployment failed:\n${output}` }] });
         } else {
           resolve({
