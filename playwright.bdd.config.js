@@ -1,16 +1,20 @@
 // @ts-check
 import { defineConfig, devices } from '@playwright/test';
+import { defineBddConfig } from 'playwright-bdd';
+
+const testDir = defineBddConfig({
+  features: 'features/**/*.feature',
+  steps: 'features/steps/**/*.js',
+});
 
 export default defineConfig({
-  testDir: './tests',
+  testDir,
   fullyParallel: false,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
   workers: 1,
   reporter: [
     ['list'],
-    ['html', { open: 'never' }],
-    ['allure-playwright', { resultsDir: 'allure-results', suiteTitle: false }],
+    ['html', { outputFolder: 'bdd-html-report', open: 'never' }],
+    ['allure-playwright', { resultsDir: 'allure-results-bdd', suiteTitle: false }],
   ],
   use: {
     baseURL: 'http://localhost:3000',
