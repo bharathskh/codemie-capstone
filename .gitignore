@@ -1,4 +1,11 @@
 node_modules/
+dist/
+allure-results/
+allure-report/
+allure-results-bdd/
+allure-report-bdd/
+bdd-html-report/
+.features-gen/
 .env.local
 cookies.txt
 *.env
